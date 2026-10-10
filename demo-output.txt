@@ -1,0 +1,180 @@
+
+=== step1_no_judge.py ===
+STEP 1  A forger without a judge
+The ring: 2,000 fakes after 5,000 steps of "be close to a real point".
+  on one of the eight spots: 0 %   spots covered: 0 of 8
+  the fakes are at (-0.00, -0.00), 0.01 from the middle. The spots are 2.00 from the middle.
+  how far the fakes differ from each other: 0.006
+The digits: the same goal on pictures.
+  the squares of two fakes differ by 0.008 on average (real pictures: 0.46)
+  the referee reads the digit 8 in 100 % of them. Kinds of digit: 1 of 10.
+  one fake, and the average of all 1,797 real pictures:
+        ..****..             ..****..    
+        ******::             ******::    
+        **::::::             **::::::    
+        ::::**::             ::::**::    
+        ::::**::             ::::**::    
+        ::::::::..           ::::::::..  
+        ::**::::..           ::::::::..  
+        ..****::             ..****::    
+  largest difference between the fake and the average picture: 0.05 (a square goes from -1 to 1)
+
+=== step2_judge.py ===
+STEP 2  A judge that learns alone (the forger never changes)
+  The judge sees 128 real points and 128 fakes per step and learns to tell them apart.
+  "yes" = the chance the judge gives a fake of being real.
+  "pull" = the length of the arrow that the forger's goal draws on one fake (the slope of the goal at the fake).
+   judge steps    yes to a fake    pull, goal "not caught"    pull, goal "called real"
+          0         49.43 %            0.0189                    0.0193
+         25         47.71 %            0.0441                    0.0482
+         50         45.31 %            0.0843                    0.1014
+        100         39.20 %            0.1376                    0.2124
+        250         19.00 %            0.1607                    0.6756
+        500          4.48 %            0.0637                    1.3165
+      1,000          0.77 %            0.0155                    1.9267
+      2,000          0.13 %            0.0034                    2.3715
+  After 2,000 steps the judge is sure. The goal "not caught" pulls 700 times weaker than "called real".
+  The strongest pull of "not caught" was 0.1607, at step 250.
+
+=== step3_game.py ===
+STEP 3  The game with the goal of the 2014 paper (equation 1)
+  20,000 turns. A spot counts when 2 % of 2,000 fakes land on it.
+   run   spots covered   fakes on a spot   judge says yes to: real   fake
+   0        8 of 8            82 %                     71 %    53 %
+   1        7 of 8            76 %                     78 %    47 %
+   2        8 of 8            81 %                     70 %    53 %
+   3        8 of 8            89 %                     75 %    67 %
+   4        8 of 8            87 %                     79 %    64 %
+   5        7 of 8            81 %                     67 %    48 %
+  Run 3, looked at every 10 turns:
+   turn     fakes are this far from the middle   spots   on a spot
+       10            0.23                      0        0.0 %
+       50            0.79                      0        0.0 %
+      100            1.28                      0        1.4 %
+      250            2.36                      0        0.6 %
+    1,000            2.18                      0        1.3 %
+    3,000            1.96                      0        2.8 %
+    6,250            1.95                      4       16.5 %
+    9,250            1.96                      8       49.4 %
+   12,000            1.98                      8       68.5 %
+   20,000            1.99                      8       88.6 %
+  First spot at turn 160, four spots at turn 6,100, all eight at turn 8,920.
+
+=== step4_advice.py ===
+STEP 4  The same game, the forger's goal is now "be called real" (section 3 of the paper)
+   run   spots at the end   most spots at any check   judge says yes to a fake
+   0         1 of 8                1                       3.1 %
+   1         1 of 8                1                       4.1 %
+   2         1 of 8                1                       0.0 %
+   3         1 of 8                1                       0.0 %
+   4         0 of 8                1                       0.9 %
+   5         1 of 8                1                       0.0 %
+  Run 0, looked at every 10 turns: the fakes are one clump, 0.15 wide, 2.00 from the middle.
+  The clump goes around the ring 33 times in 20,000 turns.
+  Checks with two spots or more: 0 of 2,000.
+  Spots it passes, in order (first 24): 6 3 2 0 7 3 2 7 6 5 3 1 0 7 6 5 4 3 1 0 7 6 3 2
+  The judge takes five steps per turn:
+   run 0: 1 spot, 98 % of the fakes on it, always spot 4; judge says yes to a fake 0 %, to a real point 84 %
+   run 1: 1 spot, 99 % of the fakes on it, always spot 5; judge says yes to a fake 0 %, to a real point 89 %
+   run 2: 1 spot, 98 % of the fakes on it, always spot 0; judge says yes to a fake 0 %, to a real point 89 %
+  Ten times bigger steps for both networks:
+   goal "not caught ": spots 8 8 8 8 8 8   on a spot 94 %
+   goal "called real": spots 8 7 6 7 7 8   on a spot 95 %
+
+=== step5_digits.py ===
+STEP 5  The digits
+  The referee learned from 1,437 real pictures and reads 98.6 % of the other 360 correctly.
+  Real pictures: 10 kinds of digit, the referee is sure (over 90 %) for 95 %.
+  A real picture and the most similar other real picture differ by 2.05.
+  A kind of digit counts when the referee reads it in 3 % of 1,000 fakes. Six runs each, 20,000 turns.
+   goal          steps   kinds of digit       referee sure   nearest real picture
+   not caught    small   10 10 10 10 10 10        73 %           2.72
+   not caught    big     10 10 10 10 10 10        86 %           2.17
+   called real   small   10  9 10 10 10  9        74 %           2.70
+   called real   big      6  7  6  6  7  7        93 %           1.81
+  Goal "called real", big steps, run 0, kinds of digit over the run:
+   turn    1,000  3,000  5,000  7,000  9,000 11,000 13,000 15,000 17,000 19,000
+   kinds       6     10      9      6      6      6      6      6      6      6
+   sure      54%    73%    78%    83%    84%    86%    88%    90%    93%    93%
+   share of each digit 0 to 9 at turn 3,000:   4 10  5 18  4 11 13  8 15 11
+   share of each digit 0 to 9 at turn 20,000:  0 13  0 27  0 12 26  0 14  8
+   digits that are gone: 0 2 4 7
+  Four fakes of the goal "not caught", big steps, run 0:
+            ####              ::####            ..##**                ##::      
+          ..####              ##  ##            ##******              ####      
+        ::######              ##::##          ..##    ##..            **##::    
+      **######..              ::**::          ..**    **..            ::##..    
+        ##..##..            **####            ..**    ::::            ####..    
+            ##..            ##::..            ..##    **::            ####..    
+            ####            ####**..            ##**::##              ####      
+            **##                  ::..          ..####..              **##      
+
+=== step6_score.py ===
+STEP 6  A score in place of a yes or no
+  The pull on a fake during run 0 on the ring (turn: pull): 1,000: 1.02  5,750: 1.00  10,500: 0.98  15,250: 1.01  20,000: 1.02
+  All six versions, six runs each. "evenness" = the rarest kind and the most common kind, in % of the fakes.
+   goal                   steps   ring: spots    digits: kinds        sure   evenness
+   not caught (2014)      small   8 7 8 8 8 7    10 10 10 10 10 10     73 %    6.4 to 14.5
+   not caught (2014)      big     8 8 8 8 8 8    10 10 10 10 10 10     86 %    6.3 to 15.5
+   called real (advice)   small   1 1 1 1 0 1    10  9 10 10 10  9     74 %    2.9 to 19.3
+   called real (advice)   big     8 7 6 7 7 8     6  7  6  6  7  7     93 %    0.0 to 30.8
+   score (2017)           small   8 8 8 8 8 8    10 10 10 10 10 10     79 %    7.8 to 12.0
+   score (2017)           big     8 8 8 8 8 8    10 10 10 10 10 10     87 %    8.1 to 11.8
+  A new judge learns from zero against each finished forger (big steps) and is tested on pictures it has not seen.
+  Share it names correctly. A coin gives 50 %.
+   not caught (2014)      79.7 79.5 80.6 78.8 79.1 78.1    mean 79.3 %
+   called real (advice)   86.4 85.3 83.9 85.4 85.2 82.8    mean 84.8 %
+   score (2017)           60.6 61.1 62.7 60.4 63.0 63.4    mean 61.9 %
+   real pictures against other real pictures: 51.3 %
+
+=== tests.py ===
+ok    the ring has eight spots, each 2 from the middle
+ok    real points cover 8 spots and 98 to 100 % of them count as on a spot
+ok    1,797 pictures of 64 squares, every square between -1 and 1
+ok    the referee reads more than 98 % of the 360 pictures it never saw
+ok    goal "not caught" is the mean of log(1 - D)
+ok    goal "called real" is minus the mean of log D
+ok    the pull of "not caught" is D, the pull of "called real" is 1 - D
+ok    a run with the same seed gives the same fakes again
+ok    a saved forger draws its saved fakes again
+ok    looking every 10 turns does not change the run
+ok    without a judge: 0 spots, every fake less than 0.1 from the middle
+ok    without a judge the picture is the average of all real pictures
+ok    a judge that learned alone for 2,000 steps says yes to a fake in under 1 %
+ok    then "not caught" pulls more than 500 times weaker than "called real"
+ok    goal "not caught", small steps: 7 or 8 spots in all six runs
+ok    goal "called real", small steps: never more than 1 spot, at any check of any run
+ok    the clump goes around the ring more than 30 times
+ok    five judge steps per turn: one spot with over 97 % of the fakes, the same spot in the last 20 checks
+ok    big steps: "not caught" 8 spots in all runs, "called real" loses a spot in some
+ok    real pictures: 10 kinds, the referee is sure for over 90 %
+ok    "called real", big steps: every run had all 10 kinds once and ends with 6 or 7
+ok    its fakes are nearer to a real picture than real pictures are to each other
+ok    "not caught": 10 kinds in all twelve runs
+ok    its fakes with big steps are not nearer to a real picture than real pictures are to each other
+ok    the score: 8 spots and 10 kinds in all 24 runs
+ok    with the score the pull on a fake stays between 0.9 and 1.1
+ok    a new judge names the fakes of the score least often, those of "called real" most often
+ok    a new judge still beats a coin against every forger
+ok    a new judge cannot tell real pictures from other real pictures
+ok    2 random numbers in place of 32: 8 spots in three runs
+ALL TESTS PASS (30 of 30)
+
+=== exercise.py ===
+The goal "be called real", small steps, 2 random numbers in place of 32. Run 0:
+  turn  2,000: 0 of 8 spots,   3 % of the fakes on a spot   (2 s)
+  turn  4,000: 8 of 8 spots,  36 % of the fakes on a spot   (3 s)
+  turn  6,000: 8 of 8 spots,  60 % of the fakes on a spot   (5 s)
+  turn  8,000: 8 of 8 spots,  71 % of the fakes on a spot   (6 s)
+  turn 10,000: 8 of 8 spots,  77 % of the fakes on a spot   (8 s)
+  turn 12,000: 8 of 8 spots,  81 % of the fakes on a spot   (9 s)
+  turn 14,000: 8 of 8 spots,  83 % of the fakes on a spot   (11 s)
+  turn 16,000: 8 of 8 spots,  85 % of the fakes on a spot   (12 s)
+  turn 18,000: 8 of 8 spots,  87 % of the fakes on a spot   (14 s)
+  turn 20,000: 8 of 8 spots,  88 % of the fakes on a spot   (15 s)
+Three saved runs, spots at the end:
+  32 random numbers: 1 1 1
+   2 random numbers: 8 8 8
+Why could that be? A point on the page has 2 numbers. With 2 numbers in, the forger only has to bend the page.
+With 32 numbers in, it has to press 32 directions flat first, and one clump is the easiest way to do that.
+This is a guess, not a proof. Next exercise: try 4, 8 and 16 (the word noise in train) and find where the clump comes back.
